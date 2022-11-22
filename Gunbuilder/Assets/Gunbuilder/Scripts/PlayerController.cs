@@ -25,7 +25,6 @@ public class PlayerController : MonoBehaviour
     public Rigidbody playerRigidbody; //unity component, 
     public float playerHeight; //this is for raycasting to the ground to see if grounded.
     public float playerHeightOffset;
-    public LayerMask whatIsGround;
     public float groundDrag;
 
     [Header("Jumping")]

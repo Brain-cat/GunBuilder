@@ -13,6 +13,6 @@ public class MainMenu : MonoBehaviour
     public void ExitGame() 
     {
         Debug.Log("Quit Selected");
-        Application.Quit();
+        Application.Quit(); //quits app, doesn't work in editor
     }
 }
