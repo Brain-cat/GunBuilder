@@ -132,3 +132,20 @@ MonoBehaviour:
   ItemName: Bandage
   SlotImg: {fileID: 21300000, guid: 1841c5c69409d7144a9ee25dce974f47, type: 3}
   ItemPrefab: {fileID: 3995713089396349768}
+  ViewModelPosOffset: {x: 0, y: 0, z: 0}
+  ViewModelRotOffset: {x: 0, y: 0, z: 0}
+  Damage: 0
+  Recoil: 0
+  Spread: 0
+  BulletVelocity: 0
+  ReloadSpeed: 0
+  AimSpeed: 0
+  FireRateRPM: 60
+  JammingChance: 0
+  FiringMode: SemiAuto
+  AmmoType: Consumable
+  MagSize: 1
+  AmmoInClip: 1
+  IsWeapon: 0
+  Healing: 25
+  HealingRate: 100

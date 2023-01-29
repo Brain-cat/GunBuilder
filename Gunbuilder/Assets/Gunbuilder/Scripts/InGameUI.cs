@@ -14,8 +14,13 @@ public class InGameUI : MonoBehaviour
     public Inventory playerInventory;
     public float SlotSelectScale;
     public float SlotDeselectScale;
+    public WeaponController weaponController;
+    public GameObject EquipedAmmoUI;
+    public GameObject LightAmmoUI;
+    public GameObject MediumAmmoUI;
+    public GameObject HeavyAmmoUI;
 
-    bool MenuEnabled;
+    public bool MenuEnabled;
     bool optionsMenuEnabled;
     int slotScrollTo;
     public GameObject selectedSlot;
@@ -25,6 +30,15 @@ public class InGameUI : MonoBehaviour
     void Start()
     {
         InventoryScrolling(0); //defaults the selected slot to the first one on boot
+
+        if (selectedSlot.GetComponent<SlotInfo>().Full == false) //checks if first slot is empty on boot
+        {
+            UpdateEquipedAmmoUI("EmptyHands",0); //updates equiped ammo UI
+        }
+
+        else
+            UpdateEquipedAmmoUI(selectedSlot.GetComponent<SlotInfo>().ItemPrefab.GetComponent<ItemInfo>().AmmoType, 
+                selectedSlot.GetComponent<SlotInfo>().ItemPrefab.GetComponent<ItemInfo>().AmmoInClip); //updates equiped ammo UI with slot info if slot isn't empty
     }
 
     // Update is called once per frame
@@ -58,6 +72,13 @@ public class InGameUI : MonoBehaviour
         { 
             InventoryScrolling(Input.mouseScrollDelta.y);//scrolls to the next or previous slot;
             playerInventory.SelectedItemShow(selectedSlot.GetComponent<SlotInfo>(), previousSelectedSlot.GetComponent<SlotInfo>(), "Scroll"); //puts the item in the users hands
+            weaponController.GetStats(selectedSlot.GetComponent<SlotInfo>()); //sets the weapons stats in the controller
+
+            if (weaponController.isReloading == true) 
+            {
+                weaponController.reloadTime = 0;
+                weaponController.isReloading = false;
+            }
         }
     }
 
@@ -76,7 +97,11 @@ public class InGameUI : MonoBehaviour
         switch (tag)
         {
             case "Options":
-                optionsMenuEnabled = !optionsMenuEnabled; //defines if options are on or not
+                optionsMenuEnabled = true; //defines if options are on or not
+                break;
+
+            case "OptionsBack": //will be called if player clicks the back button to stop small esc twice bug
+                optionsMenuEnabled = false; //goofy way of doing this but whatever it works (there is probs a much better way but this is just ez and less brain rot)
                 break;
 
             case "ResumeGame": //resumes the game
@@ -160,6 +185,43 @@ public class InGameUI : MonoBehaviour
 
             default:
                 PickupItemPrompt.SetActive(false); //turns off the prompt
+                break;
+        }
+    }
+
+    public void UpdateAmmoUI(int lightAmmo, int mediumAmmo, int heavyAmmo) //updates the ammo UI //may want to change string if i end up using images to show light, medium, heavy 
+    {
+        LightAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"Light: {lightAmmo}");
+        MediumAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"Medium: {mediumAmmo}");
+        HeavyAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"Heavy: {heavyAmmo}");
+    }
+
+    public void UpdateEquipedAmmoUI(string ammoType, int ammoInClip) //updates equiped ammo UI
+    {
+        switch (ammoType) 
+        {
+            case("Light"):
+                EquipedAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"{ammoInClip} / {playerInventory.lightAmmo}");
+                break;
+
+            case ("Medium"):
+                EquipedAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"{ammoInClip} / {playerInventory.mediumAmmo}");
+                break;
+
+            case ("Heavy"):
+                EquipedAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"{ammoInClip} / {playerInventory.HeavyAmmo}");
+                break;
+
+            case ("Consumable"):
+                EquipedAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($"{ammoInClip}"); //shows consumable charges
+                break;
+
+            case ("EmptyHands"):
+                EquipedAmmoUI.GetComponent<TextMeshProUGUI>().text = new string($""); //hides ammo UI if empty hands
+                break;
+
+            default:
+                Debug.Log("UpdateEquipedAmmo incorrect ammoType");
                 break;
         }
     }

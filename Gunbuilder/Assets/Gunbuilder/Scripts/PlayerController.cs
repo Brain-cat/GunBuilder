@@ -16,8 +16,10 @@ public class PlayerController : MonoBehaviour
 
     [Header("Camera")]
     public float mouseSens;
-    public GameObject playerCamera;
+    public GameObject playerCameraHolder;
     public Transform cameraPos;
+    public Camera PlayerCamera;
+    public float CameraFOV;
 
     [Header("Movement")]
     public float setMovementSpeed;
@@ -64,6 +66,8 @@ public class PlayerController : MonoBehaviour
         playerRigidbody.freezeRotation = true; //prevents rb from rotating and flopping around (could turn on for death).
 
         movementSpeed = setMovementSpeed;
+
+        PlayerCamera.fieldOfView = CameraFOV;
     }
 
     //Called every frame
@@ -102,7 +106,7 @@ public class PlayerController : MonoBehaviour
     void CameraControl() 
     {
         //moves the actual camera to empty obj on body, is a work around with buggy/ stuttering camera movement with rigedbody movement
-        playerCamera.transform.position = cameraPos.position;
+        playerCameraHolder.transform.position = cameraPos.position;
 
         //getting mouse input, AxisRaw returns an unsmoothed value for precision, fixedDeltaTime is workaround for fluctuating framerate and ridigbody body cam stuttering (update is called per frame).
         //Mouse X and Mouse Y in getaxis are defined in the unity editor.
@@ -116,7 +120,7 @@ public class PlayerController : MonoBehaviour
         //clamps up and down rotation to 90 so we dont do sick flips.
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-        playerCamera.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0); //rotates camera up and down, Quaterion Euler is just what we have to use for rotation.
+        playerCameraHolder.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0); //rotates camera up and down, Quaterion Euler is just what we have to use for rotation.
         playerMesh.transform.rotation = Quaternion.Euler(0, yRotation, 0); //rotates the players mesh body so not to move the cameraPos, moving cameraPos can cause jittering while looking around
     }
 
